@@ -64,7 +64,6 @@ export class App extends Component {
         ) : (
           <div>
             <Filter onFilterChange={this.handleFilter} value={filter} />
-
             <ContactList
               filteredProducts={filteredProducts}
               deleteTodo={this.deleteTodo}
