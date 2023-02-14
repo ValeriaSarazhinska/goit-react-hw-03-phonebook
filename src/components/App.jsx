@@ -10,6 +10,19 @@ export class App extends Component {
     contacts: [],
     filter: '',
   };
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(contacts);
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
 
   addContact = data => {
     const duplicate = this.state.contacts.some(
@@ -26,34 +39,26 @@ export class App extends Component {
       contacts: prevState.contacts.filter(contact => contact.id !== id),
     }));
   };
+
   handleChange = event => {
     const { name, value } = event.currentTarget;
     this.setState({ [name]: value });
   };
+
   handleFilter = ({ target: { value } }) => {
     this.setState({ filter: value });
   };
-
-  componentDidMount() {
-    const contacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(contacts);
-    if (parsedContacts) {
-      this.setState({ contacts: parsedContacts });
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.contacts !== prevState.contacts) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-  }
+  getFilteredProducts = () => {
+    const { contacts, filter } = this.state;
+    contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
+  };
 
   render() {
     const { contacts, filter } = this.state;
+    this.getFilteredProducts();
 
-    const filteredProducts = contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filter.toLowerCase())
-    );
     return (
       <>
         <h1>PhoneBook</h1>
